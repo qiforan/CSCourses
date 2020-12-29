@@ -1,0 +1,5 @@
+add_subdirectory(chap1-io)
+add_subdirectory(chap2-fs)
+add_subdirectory(chap3-process)
+add_subdirectory(chap4-signal)
+add_subdirectory(chap5-thread)

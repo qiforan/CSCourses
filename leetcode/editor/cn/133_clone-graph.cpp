@@ -1,9 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-//leetcode submit region begin(Prohibit modification and deletion)
-/*
-// Definition for a Node.
 class Node {
 public:
     int val;
@@ -21,12 +18,11 @@ public:
         neighbors = _neighbors;
     }
 };
-*/
 
+//leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
 public:
     Node* cloneGraph(Node* node) {
-        
     }
 };
 //leetcode submit region end(Prohibit modification and deletion)

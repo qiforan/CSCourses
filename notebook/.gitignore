@@ -1,0 +1,15 @@
+# ide config
+__pycache__
+.vscode
+.idea
+
+temp
+p
+data
+build
+pythonchallenge
+tex
+cpp
+
+*.exe
+*.out

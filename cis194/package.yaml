@@ -49,3 +49,5 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - helloworld
+    - tasty
+    - tasty-hunit

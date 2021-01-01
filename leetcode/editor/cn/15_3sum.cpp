@@ -1,13 +1,54 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
 public:
-    vector<vector<int>> threeSum(vector<int>& nums) {
+    vector<vector<int>> threeSum(vector<int> &nums)
+    {
+        n = nums.size();
+        int l = 0;
         sort(nums.begin(), nums.end());
-
+        unordered_set<int> se(nums.begin(), nums.end());
+        vector<vector<int>> ret;
+        while (l < n && nums[l] <= 0) {
+            int r = n - 1;
+            while (l < r) {
+                int left = -nums[l] - nums[r];
+                if (left <= nums[r]) {
+                    if (left == nums[r] && l < r - 1 && nums[r] == nums[r - 1])
+                        ret.push_back({nums[l], left, left});
+                    else if (left < nums[r] && left > nums[l] && se.find(left) != se.end())
+                        ret.push_back({nums[l], left, nums[r]});
+                    else if (left == nums[l] && l + 1 < r && nums[l + 1] == nums[l])
+                        ret.push_back({nums[l], left, nums[r]});
+                    r_sub(r, nums);
+                } else
+                    break;
+            }
+            l_add(l, nums);
+        }
+        return ret;
     }
+
+private:
+    int n;
+
+    void l_add(int &l, const vector<int> &nums)
+    {
+        do {
+            l++;
+        } while (l < n && nums[l] == nums[l - 1]);
+    }
+
+    void r_sub(int &r, const vector<int> &nums)
+    {
+        do {
+            r--;
+        } while (0 <= r && nums[r] == nums[r + 1]);
+    }
+
 };
 //leetcode submit region end(Prohibit modification and deletion)
 
@@ -15,6 +56,8 @@ public:
 int main()
 {
     Solution s;
+    vector<int> v{3, 0, -2, -1, 1, 2};
+    s.threeSum(v);
     return 0;
 }
 

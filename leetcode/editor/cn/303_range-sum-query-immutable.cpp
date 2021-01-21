@@ -5,11 +5,14 @@ using namespace std;
 class NumArray {
 public:
     NumArray(vector<int>& nums) {
-
+        int n = nums.size();
+        dp.resize(n+1,0);
+        for(int i = 0; i < n; i++)
+            dp[i+1] = dp[i] + nums[i];
     }
-    
+    vector<int> dp;
     int sumRange(int i, int j) {
-
+        return dp[j+1] - dp[i];
     }
 };
 

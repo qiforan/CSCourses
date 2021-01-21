@@ -1,19 +1,38 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
 public:
     int getMoneyAmount(int n) {
+        dp.resize(n, vector<int>(n, 0));
+        helper(0, n - 1);
+        return dp[0][n - 1];
+    }
 
+private:
+    vector<vector<int>> dp;
+
+    int helper(int i, int j) {
+        if (i == j)
+            return dp[i][j] = 0;
+        if (i == j - 1)
+            return dp[i][j] = i + 1;
+        if (dp[i][j])
+            return dp[i][j];
+        int temp = 1 + min(i + helper(i + 1, j), j + helper(i, j - 1));
+        for (int k = i + 1; k < j; k++)
+            temp = min(temp, k+1 + max(helper(i, k - 1), helper(k + 1, j)));
+        return dp[i][j] = temp;
     }
 };
 //leetcode submit region end(Prohibit modification and deletion)
 
 
-int main()
-{
+int main() {
     Solution s;
+    s.getMoneyAmount(10);
     return 0;
 }
 

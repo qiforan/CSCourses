@@ -1,6 +1,6 @@
 # Ubuntu 的安装及配置
 
-以 Ubuntu 18.04 lts 为例，在同一块硬盘安装双系统。
+以 `Ubuntu 18.04 lts` 为例，在同一块硬盘安装双系统。
 
 ## 优盘安装系统
 
@@ -10,7 +10,7 @@
 
 3. 准备合适大小的空闲分区
 
-3. 按 `F12` 进入 BIOS, 注意使用笔记本自带键盘
+3. 按 `F12` 进入 `BIOS`, 注意使用笔记本自带键盘
 
 4. 直接给 `/` 分配全部分区
 
@@ -29,13 +29,13 @@ sudo dpkg -i sogoupinyin*.deb
 sudo apt  --fix-broken install
 ```
 
-3. 进入 Language Support 界面，在 Keyboard input method system 一栏中选择 `ficix`， 然后点击 `Apply System-Wide`，并重启
+3. 进入 `Language Support` 界面，在 `Keyboard input method system` 一栏中选择 `ficix`， 然后点击 `Apply System-Wide`，并重启
 
-4. 点击右上角的键盘标志，单击 `Configure` 项，进入下面的 `Input Method` 界面后，选择 `+` 号，进入 Add input method 界面，取消勾选 `Only Show Current Language`，添加搜狗输入法，并移到第一位
+4. 点击右上角的键盘标志，单击 `Configure` 项，进入下面的 `Input Method` 界面后，选择 `+` 号，进入 `Add input method` 界面，取消勾选 `Only Show Current Language`，添加搜狗输入法，并移到第一位
 
 ## 美化
 
-1. 安装 Unity Tweak Tool
+1. 安装 `Unity Tweak Tool`
 
 ```shell script
 sudo apt-get install unity-tweak-tool
@@ -96,3 +96,19 @@ sudo apt-get install numix-gtk-theme numix-icon-theme-circle
 ## 问题
 
 1. 双系统时间不同步
+
+两种解决方法:
+
+1.在 Ubuntu 中把计算机硬件时间改成系统显示的时间，即禁用 Ubuntu 的 UTC
+
+>在 Ubuntu 16.04 版本以前，关闭 UTC 的方法是编辑 `/etc/default/rcS`，将 `UTC=yes` 改成 `UTC=no`
+>但在 Ubuntu 16.04 使用 systemd 启动之后，时间改成了由 timedatectl 来管理，所以更改方法是
+>`timedatectl set-local-rtc 1 --adjust-system-clock`
+>执行后重启 Ubuntu
+
+2.让 Windows 把硬件时间当作 UTC
+
+>在命令行中输入下面命令
+>`Reg add HKLM\SYSTEM\CurrentControlSet\Control\TimeZoneInformation /v RealTimeIsUniversal /t REG_DWORD /d 1`
+
+倾向于第一种

@@ -26,6 +26,12 @@ Eigen::Matrix4f get_model_matrix(float rotation_angle)
     // TODO: Implement this function
     // Create the model matrix for rotating the triangle around the Z axis.
     // Then return it.
+    float PI = atan(1.0) * 4.0;
+    float rotation_radian = rotation_angle * PI / 180;
+    model(0, 0) = cos(rotation_radian);
+    model(0, 1) = -sin(rotation_radian);
+    model(1, 0) = sin(rotation_radian);
+    model(1, 1) = cos(rotation_radian);
 
     return model;
 }
@@ -40,6 +46,33 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
     // TODO: Implement this function
     // Create the projection matrix for the given parameters.
     // Then return it.
+
+    float PI = atan(1.0) * 4.0;
+    float width, height, fov_radian;
+    Eigen::Matrix4f ortho_scale = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f ortho_trans = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f persp_2_ortho = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f ortho = Eigen::Matrix4f::Identity();
+    fov_radian = eye_fov * PI / 180.0;
+    height = tan(fov_radian/2) * zNear;
+    width = height * aspect_ratio;
+
+
+    persp_2_ortho(0, 0) = zNear;
+    persp_2_ortho(1, 1) = zNear;
+    persp_2_ortho(2, 2) = zNear + zFar;
+    persp_2_ortho(2, 3) = - zNear * zFar;
+    persp_2_ortho(3, 2) = 1;
+    persp_2_ortho(3, 3) = 0;
+
+    ortho_scale(0, 0) = 1 / width;
+    ortho_scale(1, 1) = 1 / height;
+    ortho_scale(2, 2) = 2 / (zNear - zFar);
+
+    ortho_trans(2, 3) = -(zNear + zFar) / 2;
+
+    ortho = ortho_scale * ortho_trans;
+    projection = ortho * persp_2_ortho;
 
     return projection;
 }

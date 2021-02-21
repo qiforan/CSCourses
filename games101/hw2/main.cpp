@@ -31,9 +31,36 @@ Eigen::Matrix4f get_model_matrix(float rotation_angle)
 Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float zNear, float zFar)
 {
     // TODO: Copy-paste your implementation from the previous assignment.
-    Eigen::Matrix4f projection;
+    // clang-format on
+    Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();
+
+    float PI = atan(1.0) * 4.0;
+    float width, height, fov_radian;
+    Eigen::Matrix4f ortho_scale = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f ortho_trans = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f persp_2_ortho = Eigen::Matrix4f::Identity();
+    Eigen::Matrix4f ortho = Eigen::Matrix4f::Identity();
+    fov_radian = eye_fov * PI / 180.0;
+    height = -tan(fov_radian / 2) * zNear;
+    width = height * aspect_ratio;
+
+    persp_2_ortho << 
+        zNear, 0, 0, 0,
+        0, zNear, 0, 0, 
+        0, 0, zNear + zFar,-zNear * zFar, 
+        0, 0, 1, 0;
+
+    ortho_scale << 1 / width, 0, 0, 0, 0, 1 / height, 0, 0, 0, 0,
+        2 / (zNear - zFar), -(zNear + zFar) / 2, 0, 0, 0, 1;
+
+
+    ortho_trans(2, 3) = -(zNear + zFar) / 2;
+
+    ortho = ortho_scale * ortho_trans;
+    projection = ortho * persp_2_ortho;
 
     return projection;
+    // clang-format off
 }
 
 int main(int argc, const char** argv)

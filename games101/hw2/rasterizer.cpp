@@ -41,8 +41,18 @@ auto to_vec4(const Eigen::Vector3f& v3, float w = 1.0f)
 
 
 static bool insideTriangle(int x, int y, const Vector3f* _v)
-{   
-    // TODO : Implement this function to check if the point (x, y) is inside the triangle represented by _v[0], _v[1], _v[2]
+{
+    // clang-format on
+    // TODO : Implement this function to check if the point (x, y) is inside the
+    // triangle represented by _v[0], _v[1], _v[2]
+    Vector3f m(x, y, _v[0].z());
+    bool sign = (_v[1] - _v[0]).cross(m - _v[0])[2] >= 0;
+    if (sign != ((_v[2] - _v[1]).cross(m - _v[1])[2] >= 0))
+        return false;
+    if (sign != ((_v[0] - _v[2]).cross(m - _v[2])[2] >= 0))
+        return false;
+    return true;
+    // clang-format off
 }
 
 static std::tuple<float, float, float> computeBarycentric2D(float x, float y, const Vector3f* v)
@@ -104,11 +114,32 @@ void rst::rasterizer::draw(pos_buf_id pos_buffer, ind_buf_id ind_buffer, col_buf
 
 //Screen space rasterization
 void rst::rasterizer::rasterize_triangle(const Triangle& t) {
+    // clang-format on
     auto v = t.toVector4();
-    
+    float x_min = std::min(v[0][0], std::min(v[1][0], v[2][0]));
+    float x_max = std::max(v[0][0], std::max(v[1][0], v[2][0]));
+    float y_min = std::min(v[0][1], std::min(v[1][1], v[2][1]));
+    float y_max = std::max(v[0][1], std::max(v[1][1], v[2][1]));
     // TODO : Find out the bounding box of current triangle.
-    // iterate through the pixel and find if the current pixel is inside the triangle
+    // iterate through the pixel and find if the current pixel is inside the
+    // triangle
+    for (int x = int(x_min); x <= int(x_max); x++)
+        for (int y = int(y_min); y <= int(y_max); y++) {
+            if (insideTriangle(x + 0.5, y + 0.5, t.v)) {
+                auto [alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
+                float w_reciprocal = 1.0 /
+                    (alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
+                float z_interpolated = alpha * v[0].z() / v[0].w() +
+                    beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
+                z_interpolated *= w_reciprocal;
+                if (z_interpolated < depth_buf[get_index(x, y)]) {
+                    depth_buf[get_index(x, y)] = z_interpolated;
+                    set_pixel(Vector3f(x, y, 1), t.getColor());
+                }
+            }
+        }
 
+    // clang-format off
     // If so, use the following code to get the interpolated z value.
     //auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
     //float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
